@@ -1,8 +1,10 @@
-fastapi==0.115.12
-mysql_connector_repackaged==0.3.1
+"fastapi[standard]"==0.115.12
+mysql-connector-python
 passlib==1.7.4
 pydantic==2.11.3
 PyMySQL==1.1.1
 python_jose==3.4.0
 SQLAlchemy==2.0.40
 starlette==0.46.2
+cryptography
+bcrypt
