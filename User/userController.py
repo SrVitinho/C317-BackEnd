@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from User.userBase import UserBase, UserResponse
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from DataBase import engine, SessionLocal
 from models import *
-from main import get_db
 
 router = APIRouter(
     prefix='/users',
@@ -14,8 +14,15 @@ router = APIRouter(
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated='auto')
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
-db_dependency = Annotated[Session, Depends(get_db)]
 
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+db_dependency = Annotated[Session, Depends(get_db)]
 
 @router.post('/create/', status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserBase, db: db_dependency):

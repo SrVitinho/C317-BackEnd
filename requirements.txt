@@ -1,4 +1,4 @@
-"fastapi[standard]"==0.115.12
+fastapi[standard]==0.115.12
 mysql-connector-python
 passlib==1.7.4
 pydantic==2.11.3
