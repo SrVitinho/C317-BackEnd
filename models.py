@@ -21,7 +21,7 @@ class Pedido(Base):
     Nome_Evento = Column(String, index=True)
     Horario_Inicio = Column(Time)
     Horario_Fim = Column(Time)
-    Preco = Column(Double)
+    Preço = Column(Double)  # Needs further refactoring
     Status = Column(String)
     Ativo = Column(Boolean, index=True)
     Data_Evento = Column(Date)
