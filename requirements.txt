@@ -8,3 +8,4 @@ SQLAlchemy==2.0.40
 starlette==0.46.2
 cryptography
 bcrypt
+pillow=11.2.1
