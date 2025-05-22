@@ -11,6 +11,7 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
 from keys import SECRET_KEY
 from models import User
+from User.userBase import UserResponse
 
 router = APIRouter(
     prefix='/auth',
@@ -26,7 +27,7 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 class Token(BaseModel):
     acess_token: str
     token_type: str
-    user: User
+    user: UserResponse
 
 
 def get_db():
@@ -62,7 +63,7 @@ async def login_for_acess_token(form_data: Annotated[OAuth2PasswordRequestForm, 
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Wrong user and/or password")
     token = create_acess_token(user.Email, user.ID, timedelta(days=7))
-    return {"acess_token": token, "token_type": "bearer", "user": user}
+    return {"access_token": token, "token_type": "bearer", "user": user}
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
