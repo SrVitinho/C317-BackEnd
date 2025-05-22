@@ -69,10 +69,10 @@ async def update_user(userUPT: UserUpdate, db: db_dependency):
     db.commit()
 
 @router.put("/update/Adm/Role", status_code=status.HTTP_202_ACCEPTED)
-async def update_role(userUPT: UserUpdateADM, role: str, db: db_dependency):
+async def update_role(userUPT: UserUpdateADM, db: db_dependency):
     user = read_user(userUPT.ID, db)
     
-    user.role = role
+    user.role = userUPT.role
     user.userName = userUPT.userName
     user.NumCel = userUPT.NumCel
 
