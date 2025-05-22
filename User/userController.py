@@ -45,7 +45,7 @@ async def create_user(user: UserBase, db: db_dependency):
 
 @router.get("/all", response_model=List[UserResponse], status_code=status.HTTP_200_OK)
 async def get_all_users(db: db_dependency):
-    user = db.query(User).filter(User.Ativo == True).all()
+    user = db.query(User).filter().all()
     if len(user) == 0:
         raise HTTPException(status_code=404, detail="No User found in DB")
     return user
