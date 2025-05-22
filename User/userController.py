@@ -78,3 +78,21 @@ async def update_role(userUPT: UserUpdateADM, db: db_dependency):
 
     db.add(user)
     db.commit()  
+
+@router.put("/toogle/Status", status_code=status.HTTP_202_ACCEPTED)
+async def toogle_roles(user_id: int, db: db_dependency):
+    user = db.query(User).filter(User.ID == user_id).first()
+    print(user.Ativo)
+    if user.Ativo == True:
+        user.Ativo = False
+        db.add(user)
+        db.commit()
+        return "User Ativo changed to False"
+    
+    elif not user.Ativo:
+        user.Ativo = True
+        db.add(user)
+        db.commit()
+        return "User Ativo changed to True"
+    
+    raise status.HTTP_422_UNPROCESSABLE_ENTITY
