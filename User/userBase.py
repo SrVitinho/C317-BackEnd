@@ -8,13 +8,20 @@ class UserBase(BaseModel):
     role: str
     NumCel: str
 
+class UserUpdate(BaseModel):
+    ID: int
+    userName: str
+    NumCel: str
+
 
 class UserResponse(BaseModel):
-    id: int
+    ID: int
     userName: str
     Email: str
     role: str
     NumCel: str
+    Ativo: bool
 
     class Config:
         orm_mode = True
+
