@@ -60,9 +60,25 @@ async def get_image(item: int):
     image_path = "imagens/" + str(item) + ".png"
     return FileResponse(image_path, media_type="image/png")
 
+@router.get("/all", status_code=status.HTTP_200_OK)
+async def get_all_itens(db: db_dependency):
+    users = db.query(models.Item).filter(models.Item.Ativo == True).all()
+
+    if len(users) == 0:
+        raise HTTPException(status_code=404, detail="No User found in DB")
+    
+    AllResponses = []
+
+    for user in users:
+        response = read_item(user.ID, db)
+        AllResponses.append(response)
+
+    formattedResponse = {"Itens": AllResponses}
+    return formattedResponse
+
 
 @router.get("/{item_id}", status_code=status.HTTP_200_OK)
-async def read_item(item_id: int, db: db_dependency):
+def read_item(item_id: int, db: db_dependency):
     item = db.query(models.Item).filter(models.Item.ID == item_id).first()
 
     if item is None:
