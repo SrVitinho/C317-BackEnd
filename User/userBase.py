@@ -12,6 +12,11 @@ class UserUpdate(BaseModel):
     userName: str
     NumCel: str
 
+class UserUpdateADM(BaseModel):
+    ID: int
+    userName: str
+    NumCel: str
+    role: str
 
 class UserResponse(BaseModel):
     ID: int

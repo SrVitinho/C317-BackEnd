@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends, status, APIRouter
 from typing import Annotated
 from sqlalchemy.orm import Session
-from User.userBase import UserBase, UserResponse, UserUpdate
+from User.userBase import UserBase, UserResponse, UserUpdate, UserUpdateADM
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from DataBase import engine, SessionLocal
@@ -69,7 +69,7 @@ async def update_user(userUPT: UserUpdate, db: db_dependency):
     db.commit()
 
 @router.put("/update/Adm/Role", status_code=status.HTTP_202_ACCEPTED)
-async def update_role(userUPT: UserUpdate, role: str, db: db_dependency):
+async def update_role(userUPT: UserUpdateADM, role: str, db: db_dependency):
     user = read_user(userUPT.ID, db)
     
     user.role = role
