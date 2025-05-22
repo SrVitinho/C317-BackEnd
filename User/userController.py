@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends, status, APIRouter
 from typing import Annotated
 from sqlalchemy.orm import Session
-from User.userBase import UserBase, UserResponse, UserUpdate
+from User.userBase import UserBase, UserResponse, UserUpdate, UserUpdateADM
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from DataBase import engine, SessionLocal
@@ -32,11 +32,15 @@ async def create_user(user: UserBase, db: db_dependency):
         userName=user.userName,
         password=bcrypt_context.hash(user.password),
         Email=user.Email,
-        role=user.role,
-        NumCel=user.NumCel
+        role="Comprador",
+        NumCel=user.NumCel,
+        Ativo = True
     )
     db.add(db_user)
     db.commit()
+
+    db_user.password="N/A"
+
     return db_user
 
 @router.get("/all", response_model=List[UserResponse], status_code=status.HTTP_200_OK)
@@ -64,11 +68,31 @@ async def update_user(userUPT: UserUpdate, db: db_dependency):
     db.add(user)
     db.commit()
 
-@router.put("/Set/Role", status_code=status.HTTP_202_ACCEPTED)
-async def update_role(role: str, id_user: int, db: db_dependency):
-    user = read_user(id_user, db)
+@router.put("/update/Adm/Role", status_code=status.HTTP_202_ACCEPTED)
+async def update_role(userUPT: UserUpdateADM, db: db_dependency):
+    user = read_user(userUPT.ID, db)
     
-    user.role = role
-    
+    user.role = userUPT.role
+    user.userName = userUPT.userName
+    user.NumCel = userUPT.NumCel
+
     db.add(user)
     db.commit()  
+
+@router.put("/toogle/Status", status_code=status.HTTP_202_ACCEPTED)
+async def toogle_roles(user_id: int, db: db_dependency):
+    user = db.query(User).filter(User.ID == user_id).first()
+    print(user.Ativo)
+    if user.Ativo == True:
+        user.Ativo = False
+        db.add(user)
+        db.commit()
+        return "User Ativo changed to False"
+    
+    elif not user.Ativo:
+        user.Ativo = True
+        db.add(user)
+        db.commit()
+        return "User Ativo changed to True"
+    
+    raise status.HTTP_422_UNPROCESSABLE_ENTITY
