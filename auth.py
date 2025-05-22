@@ -60,7 +60,7 @@ async def login_for_acess_token(form_data: Annotated[OAuth2PasswordRequestForm, 
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Wrong user and/or password")
     token = create_acess_token(user.Email, user.ID, timedelta(days=7))
-    return {"acess_token": token, "token_type": "bearer"}
+    return {"acess_token": token, "token_type": "bearer", "User": user}
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
