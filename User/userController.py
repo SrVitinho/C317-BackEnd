@@ -37,6 +37,9 @@ async def create_user(user: UserBase, db: db_dependency):
     )
     db.add(db_user)
     db.commit()
+
+    db_user.password="N/A"
+
     return db_user
 
 @router.get("/all", response_model=List[UserResponse], status_code=status.HTTP_200_OK)
