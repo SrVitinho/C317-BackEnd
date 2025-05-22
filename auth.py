@@ -25,7 +25,7 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
 
 class Token(BaseModel):
-    acess_token: str
+    access_token: str
     token_type: str
     user: UserResponse
 
