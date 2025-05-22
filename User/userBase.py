@@ -5,7 +5,6 @@ class UserBase(BaseModel):
     userName: str
     Email: str
     password: str
-    role: str
     NumCel: str
 
 class UserUpdate(BaseModel):
