@@ -44,6 +44,11 @@ def getOrcamento(itens: list, db: db_dependency):
     return price
 
 
+@router.get('/get/price', status_code=status.HTTP_200_OK, response_model=PedidoResponse)
+def get_Price(itens: list[ItemAdd], db: db_dependency):
+    orcamentoPreco = getOrcamento(itens, db)
+    return {"Preço": orcamentoPreco}
+
 @router.post('/create/', status_code=status.HTTP_201_CREATED, response_model=PedidoResponse)
 def create_Pedido(pedido: PedidoBase, itens: list[ItemAdd], db: db_dependency):
     db_Pedido = Pedido(**pedido.model_dump())
