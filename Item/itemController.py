@@ -11,6 +11,8 @@ from Item.itemBase import ItemBase
 from DataBase import engine, SessionLocal
 from PIL import Image
 from keys import link
+from typing import Optional
+from auth import get_current_user
 
 router = APIRouter(
     prefix='/item',
@@ -55,7 +57,7 @@ async def create_Item(db: Session = Depends(get_db), Nome: str = Form(...), Desc
     return "Item saved with success"
 
 @router.put("/update/", status_code=status.HTTP_200_OK)
-async def update_Item(db: Session = Depends(get_db), id: int = Form(...), Nome: str = Form(...), Descricao: str = Form(...), Categoria: str = Form(...), Preco: float = Form(...), Ativo: bool = Form(...), image: UploadFile = File(...)):
+async def update_Item(db: Session = Depends(get_db), id: int = Form(...), Nome: str = Form(...), Descricao: str = Form(...), Categoria: str = Form(...), Preco: float = Form(...), Ativo: bool = Form(...), image: Optional[UploadFile] = File(None)):
     
     db_Item = db.query(models.Item).filter(models.Item.ID == id).first()
     print(db_Item.ID)
@@ -68,14 +70,15 @@ async def update_Item(db: Session = Depends(get_db), id: int = Form(...), Nome: 
     db_Item.Preco=Preco,
     db_Item.Ativo=Ativo
 
-    try:
-        file = Image.open(image.file)
+    if image != None:
+        try:
+            file = Image.open(image.file)
 
-    except Exception as err:
-        raise HTTPException(status_code=406, detail="The image file is not valid")
+        except Exception as err:
+            raise HTTPException(status_code=406, detail="The image file is not valid")
 
-    filePath = "imagens/" + str(db_Item.ID) + ".png"
-    file.save(filePath)
+        filePath = "imagens/" + str(db_Item.ID) + ".png"
+        file.save(filePath)
 
     db.add(db_Item)
     db.commit()
@@ -107,8 +110,17 @@ async def get_image(item: int):
     return FileResponse(image_path, media_type="image/png")
 
 @router.get("/all", status_code=status.HTTP_200_OK)
-async def get_all_itens(db: db_dependency):
-    itens = db.query(models.Item).filter(models.Item.Ativo == True).all()
+async def get_all_itens(db: db_dependency, current_user: models.User = Depends(get_current_user)):
+    
+    if current_user.role == "Cliente":
+        itens = db.query(models.Item).filter(models.Item.Ativo == True).all()
+    
+    elif current_user.role == "Administrador":
+        itens = db.query(models.Item).filter().all()
+
+    else:
+        raise HTTPException(status_code=403, detail="invalid user")
+    
 
     if len(itens) == 0:
         raise HTTPException(status_code=404, detail="No User found in DB")
