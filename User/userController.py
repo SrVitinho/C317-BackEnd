@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from DataBase import engine, SessionLocal
 from models import *
 from typing import List
+from auth import get_current_user
 
 
 router = APIRouter(
@@ -49,6 +50,10 @@ async def get_all_users(db: db_dependency):
     if len(user) == 0:
         raise HTTPException(status_code=404, detail="No User found in DB")
     return user
+
+@router.get("/protected-route")
+def protected_route(user: User = Depends(get_current_user)):
+    return f"Hello, {user.Email}"
 
 @router.get("/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
 def read_user(user_id: int, db: db_dependency):
@@ -96,3 +101,6 @@ async def toogle_roles(user_id: int, db: db_dependency):
         return "User Ativo changed to True"
     
     raise status.HTTP_422_UNPROCESSABLE_ENTITY
+
+
+
