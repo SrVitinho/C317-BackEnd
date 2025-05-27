@@ -44,10 +44,14 @@ def getOrcamento(itens: list, db: db_dependency):
     return price
 
 
-@router.get('/get/price', status_code=status.HTTP_200_OK, response_model=PedidoResponse)
+@router.post('/get/price', status_code=status.HTTP_200_OK, response_model=PedidoResponse)
 def get_Price(itens: list[ItemAdd], db: db_dependency):
     orcamentoPreco = getOrcamento(itens, db)
     return {"Preço": orcamentoPreco}
+
+@router.put('/set/status', status_code=status.HTTP_200_OK)
+def set_Status(Status: str, id: int, db: db_dependency):
+    return "work in pogress"
 
 
 @router.post('/create/', status_code=status.HTTP_201_CREATED, response_model=PedidoResponse)
