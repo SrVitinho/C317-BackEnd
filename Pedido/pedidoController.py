@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from auth import get_current_user
 import models
-from Pedido.pedidoBase import PedidoBase, PackageBase
+from Pedido.pedidoBase import PedidoBase, PackageBase, PedidoResponse
 from DataBase import engine, SessionLocal
 from HasItens.hasItensBase import ItemAdd
 from HasItens.hasItensController import PedidoHasItensController
@@ -44,10 +44,10 @@ def getOrcamento(itens: list, db: db_dependency):
     return price
 
 
-@router.post('/create/', status_code=status.HTTP_201_CREATED)
+@router.post('/create/', status_code=status.HTTP_201_CREATED, response_model=PedidoResponse)
 def create_Pedido(pedido: PedidoBase, itens: list[ItemAdd], db: db_dependency):
     db_Pedido = Pedido(**pedido.model_dump())
-    db_Pedido.Status = "Pendente"
+    db_Pedido.Status = "Orcado"
     db_Pedido.Ativo = 1
 
     orcamentoPreco = getOrcamento(itens, db)
@@ -61,6 +61,8 @@ def create_Pedido(pedido: PedidoBase, itens: list[ItemAdd], db: db_dependency):
 
     for add in itens:
         PedidoHasItensController.postHasItem(idPedido=db_Pedido.ID, idItem=add.ID, quantidade=add.quantidade, db=db)
+
+    return db_Pedido
 
 @router.post('/update/packages/', status_code=status.HTTP_201_CREATED)
 async def create_Package(db: db_dependency, Package: PackageBase, current_user: User = Depends(get_current_user)):
@@ -85,7 +87,6 @@ async def create_Package(db: db_dependency, Package: PackageBase, current_user: 
 
 @router.get("/all", status_code=status.HTTP_200_OK)
 async def get_pedidos(db: db_dependency, current_user: User = Depends(get_current_user)):
-    print(current_user.role)
     if current_user.role == "Cliente":
         orcamentos = db.query(models.Pedido).filter(models.Pedido.ID_Comprador == current_user.ID).all()
         return orcamentos

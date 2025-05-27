@@ -10,6 +10,9 @@ class PedidoBase(BaseModel):
     Data_Evento: str
     Data_Compra: str
 
+class PedidoResponse(BaseModel):
+    Preço: float 
+
 class PackageBase(BaseModel):
     id_pacote: int 
     Nome_Evento: str
