@@ -82,6 +82,25 @@ async def update_Item(db: Session = Depends(get_db), id: int = Form(...), Nome: 
 
     return "Item updated with success"
 
+@router.put("/toogle/Status", status_code=status.HTTP_202_ACCEPTED)
+async def toogle_roles(item_id: int, db: db_dependency):
+    item = db.query(models.Item).filter(models.Item.ID == item_id).first()
+    print(item.Ativo)
+    if item.Ativo == True:
+        item.Ativo = False
+        db.add(item)
+        db.commit()
+        return "User Ativo changed to False"
+    
+    elif not item.Ativo:
+        item.Ativo = True
+        db.add(item)
+        db.commit()
+        return "User Ativo changed to True"
+    
+    raise status.HTTP_422_UNPROCESSABLE_ENTITY
+
+
 @router.get("/getImage/{item}", status_code=status.HTTP_201_CREATED)
 async def get_image(item: int):
     image_path = "imagens/" + str(item) + ".png"
@@ -104,7 +123,7 @@ async def get_all_itens(db: db_dependency):
     return formattedResponse
 
 
-@router.get("/{item_id}", status_code=status.HTTP_200_OK)
+@router.get("toogle/{item_id}", status_code=status.HTTP_200_OK)
 def read_item(item_id: int, db: db_dependency):
     item = db.query(models.Item).filter(models.Item.ID == item_id).first()
 
