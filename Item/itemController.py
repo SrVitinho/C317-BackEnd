@@ -54,6 +54,33 @@ async def create_Item(db: Session = Depends(get_db), Nome: str = Form(...), Desc
 
     return "Item saved with success"
 
+@router.put("/update/", status_code=status.HTTP_200_OK)
+async def update_Item(db: Session = Depends(get_db), id: int = Form(...), Nome: str = Form(...), Descricao: str = Form(...), Categoria: str = Form(...), Preco: float = Form(...), Ativo: bool = Form(...), image: UploadFile = File(...)):
+    
+    db_Item = db.query(models.Item).filter(models.Item.ID == id).first()
+    print(db_Item.ID)
+    if db_Item.Categoria is None:
+        raise HTTPException(status_code=403, detail="Invalid Item")
+
+    db_Item.Nome=Nome,
+    db_Item.Descricao=Descricao,
+    db_Item.Categoria=Categoria,
+    db_Item.Preco=Preco,
+    db_Item.Ativo=Ativo
+
+    try:
+        file = Image.open(image.file)
+
+    except Exception as err:
+        raise HTTPException(status_code=406, detail="The image file is not valid")
+
+    filePath = "imagens/" + str(db_Item.ID) + ".png"
+    file.save(filePath)
+
+    db.add(db_Item)
+    db.commit()
+
+    return "Item updated with success"
 
 @router.get("/getImage/{item}", status_code=status.HTTP_201_CREATED)
 async def get_image(item: int):
