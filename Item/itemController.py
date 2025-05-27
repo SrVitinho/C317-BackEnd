@@ -69,14 +69,15 @@ async def update_Item(db: Session = Depends(get_db), id: int = Form(...), Nome: 
     db_Item.Preco=Preco,
     db_Item.Ativo=Ativo
 
-    try:
-        file = Image.open(image.file)
+    if image != None:
+        try:
+            file = Image.open(image.file)
 
-    except Exception as err:
-        raise HTTPException(status_code=406, detail="The image file is not valid")
+        except Exception as err:
+            raise HTTPException(status_code=406, detail="The image file is not valid")
 
-    filePath = "imagens/" + str(db_Item.ID) + ".png"
-    file.save(filePath)
+        filePath = "imagens/" + str(db_Item.ID) + ".png"
+        file.save(filePath)
 
     db.add(db_Item)
     db.commit()
