@@ -44,10 +44,36 @@ def getOrcamento(itens: list, db: db_dependency):
     return price
 
 
+@router.post('/get/price', status_code=status.HTTP_200_OK, response_model=PedidoResponse)
+def get_Price(itens: list[ItemAdd], db: db_dependency):
+    orcamentoPreco = getOrcamento(itens, db)
+    return {"Preço": orcamentoPreco}
+
+@router.put('/set/status', status_code=status.HTTP_200_OK)
+def set_Status(Status: str, id: int, db: db_dependency):
+    pedido = db.query(models.Pedido).filter(models.Pedido.ID == id).first()
+
+    if pedido.ID is None:
+        raise HTTPException(status_code=403, detail="invalid pedido")
+
+    statusList = ["Orcado", "Pendente", "Aprovado", "Reprovado", "Pagamento", "Concluido"]
+
+    if Status not in statusList:
+        raise HTTPException(status_code=403, detail="Invalid Status")
+    
+    pedido.Status = Status
+
+    db.add(pedido)
+    db.commit()
+    return "update successful"
+
+
 @router.post('/create/', status_code=status.HTTP_201_CREATED, response_model=PedidoResponse)
 def create_Pedido(pedido: PedidoBase, itens: list[ItemAdd], db: db_dependency):
     db_Pedido = Pedido(**pedido.model_dump())
-    db_Pedido.Status = "Orcado"
+    validStatus = ["Orcado", "Pendente"]
+    if db_Pedido.Status not in validStatus:
+        raise HTTPException(status_code=406, detail="Invalid Status")
     db_Pedido.Ativo = 1
 
     orcamentoPreco = getOrcamento(itens, db)

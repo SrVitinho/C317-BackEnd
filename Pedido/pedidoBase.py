@@ -9,6 +9,7 @@ class PedidoBase(BaseModel):
     Horario_Fim: str
     Data_Evento: str
     Data_Compra: str
+    Status: str
 
 class PedidoResponse(BaseModel):
     Preço: float 
