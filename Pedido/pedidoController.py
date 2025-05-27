@@ -81,3 +81,17 @@ async def create_Package(db: db_dependency, Package: PackageBase, current_user: 
     pedido = PedidoBase(**pedido_data)
     pedido = create_Pedido(pedido=(pedido), itens=itens, db=db)
     return pedido
+
+
+@router.get("/all", status_code=status.HTTP_200_OK)
+async def get_pedidos(db: db_dependency, current_user: User = Depends(get_current_user)):
+    print(current_user.role)
+    if current_user.role == "Cliente":
+        orcamentos = db.query(models.Pedido).filter(models.Pedido.ID_Comprador == current_user.ID).all()
+        return orcamentos
+    
+    elif current_user.role == "Administrador":
+        orcamentos = db.query(models.Pedido).filter().all()
+        return orcamentos
+    
+    raise HTTPException(status_code=404, detail="Invalid user")

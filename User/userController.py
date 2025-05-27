@@ -33,7 +33,7 @@ async def create_user(user: UserBase, db: db_dependency):
         userName=user.userName,
         password=bcrypt_context.hash(user.password),
         Email=user.Email,
-        role="Comprador",
+        role="Cliente",
         NumCel=user.NumCel,
         Ativo = True
     )
