@@ -11,6 +11,7 @@ from Item.itemBase import ItemBase
 from DataBase import engine, SessionLocal
 from PIL import Image
 from keys import link
+from typing import Optional
 
 router = APIRouter(
     prefix='/item',
@@ -55,7 +56,7 @@ async def create_Item(db: Session = Depends(get_db), Nome: str = Form(...), Desc
     return "Item saved with success"
 
 @router.put("/update/", status_code=status.HTTP_200_OK)
-async def update_Item(db: Session = Depends(get_db), id: int = Form(...), Nome: str = Form(...), Descricao: str = Form(...), Categoria: str = Form(...), Preco: float = Form(...), Ativo: bool = Form(...), image: UploadFile = File(...)):
+async def update_Item(db: Session = Depends(get_db), id: int = Form(...), Nome: str = Form(...), Descricao: str = Form(...), Categoria: str = Form(...), Preco: float = Form(...), Ativo: bool = Form(...), image: Optional[UploadFile] = File(None)):
     
     db_Item = db.query(models.Item).filter(models.Item.ID == id).first()
     print(db_Item.ID)
@@ -108,6 +109,8 @@ async def get_image(item: int):
 
 @router.get("/all", status_code=status.HTTP_200_OK)
 async def get_all_itens(db: db_dependency):
+
+
     itens = db.query(models.Item).filter(models.Item.Ativo == True).all()
 
     if len(itens) == 0:
