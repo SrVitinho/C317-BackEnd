@@ -12,6 +12,7 @@ from DataBase import engine, SessionLocal
 from PIL import Image
 from keys import link
 from typing import Optional
+from auth import get_current_user
 
 router = APIRouter(
     prefix='/item',
@@ -109,10 +110,17 @@ async def get_image(item: int):
     return FileResponse(image_path, media_type="image/png")
 
 @router.get("/all", status_code=status.HTTP_200_OK)
-async def get_all_itens(db: db_dependency):
+async def get_all_itens(db: db_dependency, current_user: models.User = Depends(get_current_user)):
+    
+    if current_user.role == "Cliente":
+        itens = db.query(models.Item).filter(models.Item.Ativo == True).all()
+    
+    elif current_user.role == "Administrador":
+        itens = db.query(models.Item).filter().all()
 
-
-    itens = db.query(models.Item).filter(models.Item.Ativo == True).all()
+    else:
+        raise HTTPException(status_code=403, detail="invalid user")
+    
 
     if len(itens) == 0:
         raise HTTPException(status_code=404, detail="No User found in DB")
