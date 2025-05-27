@@ -21,3 +21,7 @@ class PackageBase(BaseModel):
     Horario_Fim: str
     Data_Evento: str
 
+class PackageResponse(BaseModel):
+    id_item: int
+    quantidade: int
+    nome: str

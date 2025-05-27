@@ -4,12 +4,13 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from auth import get_current_user
 import models
-from Pedido.pedidoBase import PedidoBase, PackageBase, PedidoResponse
+from Pedido.pedidoBase import PedidoBase, PackageBase, PedidoResponse, PackageResponse
 from DataBase import engine, SessionLocal
 from HasItens.hasItensBase import ItemAdd
 from HasItens.hasItensController import PedidoHasItensController
 from models import *
 from datetime import datetime
+from Item.itemController import get_Item_Name
 
 
 router = APIRouter(
@@ -110,6 +111,30 @@ async def create_Package(db: db_dependency, Package: PackageBase, current_user: 
     pedido = create_Pedido(pedido=(pedido), itens=itens, db=db)
     return pedido
 
+@router.get("/packages/all")
+def get_Packages(id: int, db: db_dependency):
+    if id == 1:
+        itens = [  # needs changes after db auto population
+            ItemAdd(ID=1,quantidade=2)
+        ]
+
+        names = []
+        for item in itens:
+            names.append(get_Item_Name(item.ID, db=db))
+    
+    elif id == 2:
+        itens = [  # needs changes after db auto population
+            ItemAdd(ID=2,quantidade=4)
+        ]
+
+        names = []
+        for item in itens:
+            names.append(get_Item_Name(item.ID))
+    response = []
+    for item in range(len(itens)):
+        response.append(PackageResponse(id_item=itens[item].ID, quantidade=itens[item].quantidade, nome=names[item]))
+
+    return response
 
 @router.get("/all", status_code=status.HTTP_200_OK)
 async def get_pedidos(db: db_dependency, current_user: User = Depends(get_current_user)):
