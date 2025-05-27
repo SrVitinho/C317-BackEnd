@@ -90,13 +90,13 @@ async def toogle_roles(item_id: int, db: db_dependency):
         item.Ativo = False
         db.add(item)
         db.commit()
-        return "User Ativo changed to False"
+        return "Item Ativo changed to False"
     
     elif not item.Ativo:
         item.Ativo = True
         db.add(item)
         db.commit()
-        return "User Ativo changed to True"
+        return "Item Ativo changed to True"
     
     raise status.HTTP_422_UNPROCESSABLE_ENTITY
 
