@@ -2,13 +2,15 @@ from fastapi import FastAPI, HTTPException, Depends, status, APIRouter, Query
 from typing import Annotated
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
-
+from auth import get_current_user
 import models
-from Pedido.pedidoBase import PedidoBase
+from Pedido.pedidoBase import PedidoBase, PackageBase
 from DataBase import engine, SessionLocal
 from HasItens.hasItensBase import ItemAdd
 from HasItens.hasItensController import PedidoHasItensController
 from models import *
+from datetime import datetime
+
 
 router = APIRouter(
     prefix='/pedido',
@@ -43,7 +45,7 @@ def getOrcamento(itens: list, db: db_dependency):
 
 
 @router.post('/create/', status_code=status.HTTP_201_CREATED)
-async def create_Item(pedido: PedidoBase, itens: list[ItemAdd], db: db_dependency):
+def create_Pedido(pedido: PedidoBase, itens: list[ItemAdd], db: db_dependency):
     db_Pedido = Pedido(**pedido.model_dump())
     db_Pedido.Status = "Pendente"
     db_Pedido.Ativo = 1
@@ -59,3 +61,23 @@ async def create_Item(pedido: PedidoBase, itens: list[ItemAdd], db: db_dependenc
 
     for add in itens:
         PedidoHasItensController.postHasItem(idPedido=db_Pedido.ID, idItem=add.ID, quantidade=add.quantidade, db=db)
+
+@router.post('/update/packages/', status_code=status.HTTP_201_CREATED)
+async def create_Package(db: db_dependency, Package: PackageBase, current_user: User = Depends(get_current_user)):
+    day = datetime.today().strftime('%Y-%m-%d')
+    if Package.id_pacote == 1:
+        pedido_data = {
+            "ID_Comprador": current_user.ID,
+            "Num_Convidado": 100,
+            "Nome_Evento": Package.Nome_Evento,
+            "Horario_Inicio": Package.Horario_Inicio,
+            "Horario_Fim": Package.Horario_Fim,
+            "Data_Evento": Package.Data_Evento,
+            "Data_Compra": day,
+        }
+    itens = [  # needs changes after db auto population
+        ItemAdd(ID=1,quantidade=2)
+    ]
+    pedido = PedidoBase(**pedido_data)
+    pedido = create_Pedido(pedido=(pedido), itens=itens, db=db)
+    return pedido

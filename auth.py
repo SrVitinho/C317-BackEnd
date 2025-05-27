@@ -66,13 +66,13 @@ async def login_for_acess_token(form_data: Annotated[OAuth2PasswordRequestForm, 
     return {"access_token": token, "token_type": "bearer", "user": user}
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
+async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)], db: db_dependency):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get('sub')
         user_id: int = payload.get('id')
-        if email is None or user_id is None:
+        user = db.query(User).filter(User.ID == user_id).first()
+        if user_id is None or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate the user")
-        return {'Email': email, 'id': user_id}
+        return user
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate the user")
