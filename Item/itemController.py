@@ -103,6 +103,10 @@ async def toogle_roles(item_id: int, db: db_dependency):
     
     raise status.HTTP_422_UNPROCESSABLE_ENTITY
 
+def get_Item_Name(id: int, db: db_dependency):
+    item = db.query(models.Item).filter(models.Item.ID == id).first()
+    nome = item.Nome
+    return nome
 
 @router.get("/getImage/{item}", status_code=status.HTTP_201_CREATED)
 async def get_image(item: int):
