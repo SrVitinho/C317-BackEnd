@@ -10,7 +10,7 @@ from HasItens.hasItensBase import ItemAdd
 from HasItens.hasItensController import PedidoHasItensController
 from models import *
 from datetime import datetime
-from Item.itemController import get_Item_Name
+from Item.itemController import get_Item_Name, get_Item_Category
 
 
 router = APIRouter(
@@ -91,7 +91,7 @@ def create_Pedido(pedido: PedidoBase, itens: list[ItemAdd], db: db_dependency):
 
     return db_Pedido
 
-@router.post('/update/packages/', status_code=status.HTTP_201_CREATED)
+@router.post('/create/packages/', status_code=status.HTTP_201_CREATED)
 async def create_Package(db: db_dependency, Package: PackageBase, current_user: User = Depends(get_current_user)):
     day = datetime.today().strftime('%Y-%m-%d')
     if Package.id_pacote == 1:
@@ -103,6 +103,7 @@ async def create_Package(db: db_dependency, Package: PackageBase, current_user: 
             "Horario_Fim": Package.Horario_Fim,
             "Data_Evento": Package.Data_Evento,
             "Data_Compra": day,
+            "Status": Package.Status
         }
     itens = [  # needs changes after db auto population
         ItemAdd(ID=1,quantidade=2)
@@ -119,8 +120,10 @@ def get_Packages(id: int, db: db_dependency):
         ]
 
         names = []
+        categorias = []
         for item in itens:
             names.append(get_Item_Name(item.ID, db=db))
+            categorias.append(get_Item_Category(item.ID, db=db))
     
     elif id == 2:
         itens = [  # needs changes after db auto population
@@ -128,11 +131,13 @@ def get_Packages(id: int, db: db_dependency):
         ]
 
         names = []
+        categorias = []
         for item in itens:
-            names.append(get_Item_Name(item.ID))
+            names.append(get_Item_Name(item.ID, db=db))
+            categorias.append(get_Item_Category(item.ID, db=db))
     response = []
     for item in range(len(itens)):
-        response.append(PackageResponse(id_item=itens[item].ID, quantidade=itens[item].quantidade, nome=names[item]))
+        response.append(PackageResponse(id_item=itens[item].ID, quantidade=itens[item].quantidade, nome=names[item], categoria=categorias[item]))
 
     return response
 
