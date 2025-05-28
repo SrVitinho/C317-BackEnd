@@ -6,7 +6,7 @@ from DataBase import engine, SessionLocal
 from keys import link
 import models
 from sqlalchemy import extract
-from datetime import datetime
+from datetime import datetime, timedelta
 
 router = APIRouter(
     prefix='/dash',
@@ -52,3 +52,93 @@ async def get_pedidos_mes_atual(db: db_dependency):
     return {total_pedidos}
 
 
+@router.get("/get/eventosPorMes")
+async def get_eventos_por_mes(db: db_dependency):
+    hoje = datetime.now()
+    data_limite = hoje - timedelta(days=365)
+
+    resultados = db.query(
+        extract('year', models.Pedido.Data_Compra).label('ano'),
+        extract('month', models.Pedido.Data_Compra).label('mes'),
+        func.count(models.Pedido.ID).label('total_eventos')
+    ).filter(
+        models.Pedido.Data_Compra >= data_limite,
+        or_(
+            models.Pedido.Status == "Pagamento",
+            models.Pedido.Status == "Concluido"
+        )
+    ).group_by(
+        extract('year', models.Pedido.Data_Compra),
+        extract('month', models.Pedido.Data_Compra)
+    ).order_by(
+        extract('year', models.Pedido.Data_Compra),
+        extract('month', models.Pedido.Data_Compra)
+    ).all()
+
+    resposta = []
+    for ano, mes, total in resultados:
+        resposta.append({
+            "ano": int(ano),
+            "mes": int(mes),
+            "total_eventos": total
+        })
+
+    return resposta
+
+from sqlalchemy import extract, func, or_, and_
+from datetime import datetime, timedelta
+
+@router.get("/get/completados_vs_pendentes")
+async def get_completados_vs_pendentes(db: db_dependency):
+    hoje = datetime.now()
+    data_limite = hoje - timedelta(days=365)
+
+    # Eventos Completados (Status == "Pagamento" ou "Concluido")
+    completados = db.query(
+        extract('year', models.Pedido.Data_Compra).label('ano'),
+        extract('month', models.Pedido.Data_Compra).label('mes'),
+        func.count(models.Pedido.ID).label('total_completados')
+    ).filter(
+        models.Pedido.Data_Compra >= data_limite,
+        or_(
+            models.Pedido.Status == "Pagamento",
+            models.Pedido.Status == "Concluido"
+        )
+    ).group_by(
+        extract('year', models.Pedido.Data_Compra),
+        extract('month', models.Pedido.Data_Compra)
+    ).order_by(
+        extract('year', models.Pedido.Data_Compra),
+        extract('month', models.Pedido.Data_Compra)
+    ).all()
+
+    # Eventos Pendentes ou Orcados
+    pendentes = db.query(
+        extract('year', models.Pedido.Data_Compra).label('ano'),
+        extract('month', models.Pedido.Data_Compra).label('mes'),
+        func.count(models.Pedido.ID).label('total_pendentes')
+    ).filter(
+        models.Pedido.Data_Compra >= data_limite,
+        or_(
+            models.Pedido.Status == "Pendente",
+            models.Pedido.Status == "Orcado"
+        )
+    ).group_by(
+        extract('year', models.Pedido.Data_Compra),
+        extract('month', models.Pedido.Data_Compra)
+    ).order_by(
+        extract('year', models.Pedido.Data_Compra),
+        extract('month', models.Pedido.Data_Compra)
+    ).all()
+
+    # Formatar resposta como dicionário de listas
+    resposta = {
+        "completados": [
+            {"ano": int(ano), "mes": int(mes), "total": total} for ano, mes, total in completados
+        ],
+        "pendentes_ou_orcados": [
+            {"ano": int(ano), "mes": int(mes), "total": total} for ano, mes, total in pendentes
+        ]
+    }
+
+    return resposta
