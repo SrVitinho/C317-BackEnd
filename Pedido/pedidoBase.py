@@ -25,3 +25,4 @@ class PackageResponse(BaseModel):
     id_item: int
     quantidade: int
     nome: str
+    categoria: str

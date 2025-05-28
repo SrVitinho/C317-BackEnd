@@ -10,7 +10,7 @@ from HasItens.hasItensBase import ItemAdd
 from HasItens.hasItensController import PedidoHasItensController
 from models import *
 from datetime import datetime
-from Item.itemController import get_Item_Name
+from Item.itemController import get_Item_Name, get_Item_Category
 
 
 router = APIRouter(
@@ -119,8 +119,10 @@ def get_Packages(id: int, db: db_dependency):
         ]
 
         names = []
+        categorias = []
         for item in itens:
             names.append(get_Item_Name(item.ID, db=db))
+            categorias.append(get_Item_Category(item.ID, db=db))
     
     elif id == 2:
         itens = [  # needs changes after db auto population
@@ -128,11 +130,13 @@ def get_Packages(id: int, db: db_dependency):
         ]
 
         names = []
+        categorias = []
         for item in itens:
-            names.append(get_Item_Name(item.ID))
+            names.append(get_Item_Name(item.ID, db=db))
+            categorias.append(get_Item_Category(item.ID, db=db))
     response = []
     for item in range(len(itens)):
-        response.append(PackageResponse(id_item=itens[item].ID, quantidade=itens[item].quantidade, nome=names[item]))
+        response.append(PackageResponse(id_item=itens[item].ID, quantidade=itens[item].quantidade, nome=names[item], categoria=categorias[item]))
 
     return response
 

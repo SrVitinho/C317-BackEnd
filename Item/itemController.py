@@ -108,6 +108,11 @@ def get_Item_Name(id: int, db: db_dependency):
     nome = item.Nome
     return nome
 
+def get_Item_Category(id: int, db: db_dependency):
+    item = db.query(models.Item).filter(models.Item.ID == id).first()
+    Categoria = item.Categoria
+    return Categoria
+
 @router.get("/getImage/{item}", status_code=status.HTTP_201_CREATED)
 async def get_image(item: int):
     image_path = "imagens/" + str(item) + ".png"
