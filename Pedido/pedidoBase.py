@@ -20,6 +20,7 @@ class PackageBase(BaseModel):
     Horario_Inicio: str
     Horario_Fim: str
     Data_Evento: str
+    Status: str
 
 class PackageResponse(BaseModel):
     id_item: int
