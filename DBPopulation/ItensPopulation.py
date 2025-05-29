@@ -63,8 +63,13 @@ itens = [
     {"Nome": "Drink na Lâmpada", "Descricao": "Drink estiloso servido em lâmpada.", "Categoria": "shots", "Preco": 30.0,
      "Ativo": True, "Imagem": "drink_lampada.jpg"},
 
+    {"Nome": "Estrutura de Bar Personalizada", "Descricao": "Consultar modelos.",
+     "Categoria": "estrutura", "Preco": 1000.0, "Ativo": True, "Imagem": "bar.jpg"},
+
     {"Nome": "Bartender", "Descricao": "Profissional responsável pela preparação dos drinks.",
-     "Categoria": "funcionarios", "Preco": 0.0, "Ativo": True, "Imagem": "bartender.jpg"},
+     "Categoria": "funcionarios", "Preco": 150.0, "Ativo": True, "Imagem": "bartender.jpg"},
+    {"Nome": "Garçon", "Descricao": "Profissional responsável pela entrega de comidas e bebidas.",
+     "Categoria": "funcionarios", "Preco": 100.0, "Ativo": True, "Imagem": "garcon.png"},
 ]
 
 for item in itens:
