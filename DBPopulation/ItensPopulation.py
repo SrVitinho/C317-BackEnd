@@ -76,7 +76,6 @@ itens = [
 for item in itens:
     imagem_path = IMAGENS_DIR / item['Imagem']
     with open(imagem_path, "rb") as img_file:
-        print(f"Imagem completa: {imagem_path}")
         response = requests.post(
             BASE_URL,
             files={"image": img_file},
