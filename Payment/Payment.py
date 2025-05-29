@@ -1,3 +1,4 @@
+import requests
 from fastapi import FastAPI, HTTPException, Depends, status, APIRouter, UploadFile, Form
 from Payment.PaymentBase import itemPayment
 import models
@@ -53,6 +54,7 @@ async def get_payment(id: int, db: db_dependency, current_user: User = Depends(g
 
     payment_data = {
         "items": listItens,
+        "external_reference": str(pedido.ID),
         "back_urls": {
             "success": "https://confianopai.com/login",
             "failure": "http://127.0.0.1:8000/",
@@ -67,9 +69,31 @@ async def get_payment(id: int, db: db_dependency, current_user: User = Depends(g
     link = payment["init_point"]
     return {"payment_url": link}
 
+
 @router.put("/status", status_code=status.HTTP_200_OK)
 async def update_Status_Pagamento(id: int):
     sdk = mercadopago.SDK(MercadoPagoKey)
     payment_info = sdk.payment().get(id)
+    status = payment_info["response"]["status"]
+    print(payment_info["response"])
+    if status == "approved":
+        print("a")
     return payment_info["response"]["status"]
 
+
+def busca_pagamento_por_external_reference(external_reference: str, db: db_dependency):
+    sdk = mercadopago.SDK(MercadoPagoKey)
+    search_result = sdk.payment().search({"external_reference": external_reference})
+    print(search_result["response"]["results"])
+    try:
+        status = search_result["response"]["results"][0]["status"]
+    except Exception as err:
+        return 0
+    else:
+        if status == "approved":
+            pedido = db.query(models.Pedido).filter(models.Pedido.ID == int(external_reference)).first()
+            pedido.Status = "Aprovado"
+            db.add(pedido)
+            db.commit()
+            return 1
+        return 0
