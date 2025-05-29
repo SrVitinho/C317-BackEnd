@@ -136,8 +136,9 @@ def get_Packages(id: int, db: db_dependency):
         for item in itens:
             names.append(get_Item_Name(item.ID, db=db))
             categorias.append(get_Item_Category(item.ID, db=db))
+    else:
+        raise HTTPException(status_code=404, detail="id not found")
 
-    names = []
     response = []
     for item in range(len(itens)):
         response.append(PackageResponse(id_item=itens[item].ID, quantidade=itens[item].quantidade, nome=names[item], categoria=categorias[item]))
@@ -158,7 +159,7 @@ async def get_pedidos(db: db_dependency, current_user: User = Depends(get_curren
         pedidos = db.query(models.Pedido).filter().all()
         for pedido in pedidos:
             busca_pagamento_por_external_reference(external_reference=pedido.ID, db=db)
-        pedidos = pedidos = db.query(models.Pedido).filter().all()
+        pedidos = db.query(models.Pedido).filter().all()
         return pedidos
     
     raise HTTPException(status_code=404, detail="Invalid user")
