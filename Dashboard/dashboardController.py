@@ -101,7 +101,7 @@ async def get_completados_vs_pendentes(db: db_dependency):
     ).filter(
         models.Pedido.Data_Compra >= data_limite,
         or_(
-            models.Pedido.Status == "Pagamento",
+            models.Pedido.Status == "Aprovados",
             models.Pedido.Status == "Concluido"
         )
     ).group_by(
@@ -120,8 +120,7 @@ async def get_completados_vs_pendentes(db: db_dependency):
     ).filter(
         models.Pedido.Data_Compra >= data_limite,
         or_(
-            models.Pedido.Status == "Pendente",
-            models.Pedido.Status == "Orcado"
+            models.Pedido.Status == "Pendente"
         )
     ).group_by(
         extract('year', models.Pedido.Data_Compra),
