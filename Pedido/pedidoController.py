@@ -146,11 +146,11 @@ def get_Packages(id: int, db: db_dependency):
 @router.get("/all", status_code=status.HTTP_200_OK)
 async def get_pedidos(db: db_dependency, current_user: User = Depends(get_current_user)):
     if current_user.role == "Cliente":
-        orcamentos = db.query(models.Pedido).filter(models.Pedido.ID_Comprador == current_user.ID).all()
-        return orcamentos
+        pedidos = db.query(models.Pedido).filter(models.Pedido.ID_Comprador == current_user.ID).all()
+        return pedidos
     
     elif current_user.role == "Administrador":
-        orcamentos = db.query(models.Pedido).filter().all()
-        return orcamentos
+        pedidos = db.query(models.Pedido).filter().all()
+        return pedidos
     
     raise HTTPException(status_code=404, detail="Invalid user")

@@ -7,6 +7,7 @@ import Item.itemController as itemController
 import User.userController as userController
 import Pedido.pedidoController as pedidoController
 import Dashboard.dashboardController as dashController
+import Payment.Payment as paymentController
 import models
 from Item.itemBase import ItemBase
 from User.userBase import UserBase, UserResponse
@@ -41,6 +42,7 @@ app.include_router(itemController.router)
 app.include_router(userController.router)
 app.include_router(pedidoController.router)
 app.include_router(dashController.router)
+app.include_router(paymentController.router)
 
 def get_db():
     db = SessionLocal()
