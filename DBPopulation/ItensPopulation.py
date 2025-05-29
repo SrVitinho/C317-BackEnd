@@ -1,6 +1,5 @@
 import os
 import requests
-from keys import imagespath
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
