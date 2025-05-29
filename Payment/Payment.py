@@ -70,7 +70,6 @@ async def get_payment(id: int, db: db_dependency, current_user: User = Depends(g
 @router.put("/status", status_code=status.HTTP_200_OK)
 async def update_Status_Pagamento(id: int):
     sdk = mercadopago.SDK(MercadoPagoKey)
-    status = payment_info = sdk.payment().get(id)
-
-    return status
+    payment_info = sdk.payment().get(id)
+    return payment_info["response"]["status"]
 
