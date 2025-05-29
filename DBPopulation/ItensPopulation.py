@@ -1,11 +1,13 @@
 import os
 import requests
+from keys import imagespath
+from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent
+IMAGENS_DIR = BASE_DIR.parent / "imagenspop"
 BASE_URL = "http://localhost:8000/item/create/"
-IMAGENS_DIR = r"E:\Documentos\C317\C317-BackEnd\imagenspop"
 
 itens = [
-    # 🥂 Alcoólicos
     {"Nome": "Cosmopolitan", "Descricao": "Drink clássico com vodka, licor de laranja, limão e cranberry.",
      "Categoria": "alcoolicos", "Preco": 25.0, "Ativo": True, "Imagem": "cosmopolitan.jpg"},
     {"Nome": "Mojito", "Descricao": "Rum, hortelã, açúcar, limão e água com gás.", "Categoria": "alcoolicos",
@@ -73,8 +75,9 @@ itens = [
 ]
 
 for item in itens:
-    imagem_path = os.path.join(IMAGENS_DIR, item['Imagem'])
+    imagem_path = IMAGENS_DIR / item['Imagem']
     with open(imagem_path, "rb") as img_file:
+        print(f"Imagem completa: {imagem_path}")
         response = requests.post(
             BASE_URL,
             files={"image": img_file},
