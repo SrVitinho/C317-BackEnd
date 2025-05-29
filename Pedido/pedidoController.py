@@ -135,6 +135,8 @@ def get_Packages(id: int, db: db_dependency):
         for item in itens:
             names.append(get_Item_Name(item.ID, db=db))
             categorias.append(get_Item_Category(item.ID, db=db))
+
+    names = []
     response = []
     for item in range(len(itens)):
         response.append(PackageResponse(id_item=itens[item].ID, quantidade=itens[item].quantidade, nome=names[item], categoria=categorias[item]))
