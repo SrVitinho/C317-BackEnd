@@ -29,6 +29,7 @@ class Pedido(Base):
     Data_Compra = Column(Date)
 
 
+
 class Item(Base):
     __tablename__ = 'Item'
     ID = Column(Integer, primary_key=True, index=True)
