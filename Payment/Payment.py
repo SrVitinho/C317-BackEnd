@@ -29,7 +29,7 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 @router.get("/getPayment", status_code=status.HTTP_200_OK)
 async def get_payment(id: int, db: db_dependency, current_user: User = Depends(get_current_user)):
-    pedido = db.query(models.Pedido).filter(models.Pedido.ID_Comprador == current_user.ID).first()
+    pedido = db.query(models.Pedido).filter(models.Pedido.ID == id).first()
 
     if not pedido:
         raise HTTPException(status_code=404, detail="Pedido not found")
