@@ -151,14 +151,16 @@ async def get_pedidos(db: db_dependency, current_user: User = Depends(get_curren
         pedidos = db.query(models.Pedido).filter(models.Pedido.ID_Comprador == current_user.ID).all()
 
         for pedido in pedidos:
-            busca_pagamento_por_external_reference(external_reference=pedido.ID, db=db)
+            if pedido.Status == "Pagamento":
+                busca_pagamento_por_external_reference(external_reference=pedido.ID, db=db)
         pedidos = db.query(models.Pedido).filter(models.Pedido.ID_Comprador == current_user.ID).all()
         return pedidos
     
     elif current_user.role == "Administrador":
         pedidos = db.query(models.Pedido).filter().all()
         for pedido in pedidos:
-            busca_pagamento_por_external_reference(external_reference=pedido.ID, db=db)
+            if pedido.Status == "Pagamento":
+                busca_pagamento_por_external_reference(external_reference=pedido.ID, db=db)
         pedidos = db.query(models.Pedido).filter().all()
         return pedidos
     
