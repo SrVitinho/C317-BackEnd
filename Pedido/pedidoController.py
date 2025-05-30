@@ -99,40 +99,34 @@ async def create_Package(db: db_dependency, Package: PackageBase, current_user: 
 
     pacotes = {
         1: [
-            ItemAdd(ID=1, quantidade=50),
-            ItemAdd(ID=18, quantidade=50),
-            ItemAdd(ID=27, quantidade=1),
-            ItemAdd(ID=28, quantidade=12),
+            ItemAdd(ID=1, quantidade=80),
+            ItemAdd(ID=2, quantidade=60),
+            ItemAdd(ID=3, quantidade=50),
+            ItemAdd(ID=4, quantidade=30),
+            ItemAdd(ID=5, quantidade=20),
             ItemAdd(ID=29, quantidade=10),
-            ItemAdd(ID=26, quantidade=3),
-            ItemAdd(ID=5, quantidade=40),
-            ItemAdd(ID=6, quantidade=20),
-            ItemAdd(ID=12, quantidade=2),
-            ItemAdd(ID=13, quantidade=3),
         ],
         2: [
-            ItemAdd(ID=4, quantidade=100),
-            ItemAdd(ID=19, quantidade=50),
-            ItemAdd(ID=27, quantidade=1),
-            ItemAdd(ID=28, quantidade=15),
+            ItemAdd(ID=6, quantidade=50),
+            ItemAdd(ID=7, quantidade=40),
+            ItemAdd(ID=8, quantidade=35),
+            ItemAdd(ID=9, quantidade=30),
+            ItemAdd(ID=10, quantidade=25),
+            ItemAdd(ID=11, quantidade=30),
+            ItemAdd(ID=22, quantidade=5),
+            ItemAdd(ID=23, quantidade=2),
+            ItemAdd(ID=28, quantidade=1),
             ItemAdd(ID=29, quantidade=15),
-            ItemAdd(ID=23, quantidade=30),
-            ItemAdd(ID=26, quantidade=10),
-            ItemAdd(ID=21, quantidade=50),
-            ItemAdd(ID=14, quantidade=10),
-            ItemAdd(ID=9, quantidade=20),
+            ItemAdd(ID=30, quantidade=1),
         ],
         3: [
-            ItemAdd(ID=3, quantidade=80),
-            ItemAdd(ID=8, quantidade=70),
-            ItemAdd(ID=27, quantidade=1),
-            ItemAdd(ID=28, quantidade=9),
-            ItemAdd(ID=29, quantidade=8),
-            ItemAdd(ID=11, quantidade=20),
-            ItemAdd(ID=22, quantidade=10),
-            ItemAdd(ID=13, quantidade=10),
-            ItemAdd(ID=26, quantidade=5),
-            ItemAdd(ID=10, quantidade=25),
+            ItemAdd(ID=12, quantidade=50),
+            ItemAdd(ID=13, quantidade=40),
+            ItemAdd(ID=14, quantidade=35),
+            ItemAdd(ID=15, quantidade=45),
+            ItemAdd(ID=16, quantidade=60),
+            ItemAdd(ID=18, quantidade=20),
+            ItemAdd(ID=29, quantidade=6),
         ],
     }
 
@@ -161,47 +155,39 @@ async def create_Package(db: db_dependency, Package: PackageBase, current_user: 
 @router.get("/packages/all")
 def get_Packages(id: int, db: db_dependency):
     if id == 1:
-        # Pacote 1: R$ 7.500,00
         itens = [
-            ItemAdd(ID=1, quantidade=50),
-            ItemAdd(ID=18, quantidade=50),
-            ItemAdd(ID=27, quantidade=1),
-            ItemAdd(ID=28, quantidade=12),
+            ItemAdd(ID=1, quantidade=80),
+            ItemAdd(ID=2, quantidade=60),
+            ItemAdd(ID=3, quantidade=50),
+            ItemAdd(ID=4, quantidade=30),
+            ItemAdd(ID=5, quantidade=20),
             ItemAdd(ID=29, quantidade=10),
-            ItemAdd(ID=26, quantidade=3),
-            ItemAdd(ID=5, quantidade=40),
-            ItemAdd(ID=6, quantidade=20),
-            ItemAdd(ID=12, quantidade=2),
-            ItemAdd(ID=13, quantidade=3)
         ]
 
     elif id == 2:
-
         itens = [
-            ItemAdd(ID=4, quantidade=100),
-            ItemAdd(ID=19, quantidade=50),
-            ItemAdd(ID=27, quantidade=1),
-            ItemAdd(ID=28, quantidade=15),
+            ItemAdd(ID=6, quantidade=50),
+            ItemAdd(ID=7, quantidade=40),
+            ItemAdd(ID=8, quantidade=35),
+            ItemAdd(ID=9, quantidade=30),
+            ItemAdd(ID=10, quantidade=25),
+            ItemAdd(ID=11, quantidade=30),
+            ItemAdd(ID=22, quantidade=5),
+            ItemAdd(ID=23, quantidade=2),
+            ItemAdd(ID=28, quantidade=1),
             ItemAdd(ID=29, quantidade=15),
-            ItemAdd(ID=23, quantidade=30),
-            ItemAdd(ID=25, quantidade=10),
-            ItemAdd(ID=21, quantidade=50),
-            ItemAdd(ID=14, quantidade=10),
-            ItemAdd(ID=9, quantidade=20)
+            ItemAdd(ID=30, quantidade=1),
         ]
 
     elif id == 3:
         itens = [
-            ItemAdd(ID=3, quantidade=80),
-            ItemAdd(ID=8, quantidade=70),
-            ItemAdd(ID=27, quantidade=1),
-            ItemAdd(ID=28, quantidade=9),
-            ItemAdd(ID=29, quantidade=8),
-            ItemAdd(ID=11, quantidade=20),
-            ItemAdd(ID=22, quantidade=10),
-            ItemAdd(ID=13, quantidade=10),
-            ItemAdd(ID=26, quantidade=5),
-            ItemAdd(ID=10, quantidade=25)
+            ItemAdd(ID=12, quantidade=50),
+            ItemAdd(ID=13, quantidade=40),
+            ItemAdd(ID=14, quantidade=35),
+            ItemAdd(ID=15, quantidade=45),
+            ItemAdd(ID=16, quantidade=60),
+            ItemAdd(ID=18, quantidade=20),
+            ItemAdd(ID=29, quantidade=6),
         ]
 
     else:
