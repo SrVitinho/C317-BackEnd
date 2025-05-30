@@ -69,6 +69,26 @@ def set_Status(Status: str, id: int, db: db_dependency):
     db.commit()
     return "update successful"
 
+def create_Pedido_Intern(pedido: PedidoBase, itens: list[ItemAdd], preco: float, db: db_dependency):
+    db_Pedido = Pedido(**pedido.model_dump())
+    validStatus = ["Orcado", "Pendente"]
+    if db_Pedido.Status not in validStatus:
+        raise HTTPException(status_code=406, detail="Invalid Status")
+    db_Pedido.Ativo = 1
+
+    orcamentoPreco = getOrcamento(itens, db)
+
+    if orcamentoPreco == -1:
+        raise HTTPException(status_code=406, detail="Invalid itens")
+
+    db_Pedido.Preço = preco
+    db.add(db_Pedido)
+    db.commit()
+
+    for add in itens:
+        PedidoHasItensController.postHasItem(idPedido=db_Pedido.ID, idItem=add.ID, quantidade=add.quantidade, db=db)
+
+    return db_Pedido
 
 @router.post('/create/', status_code=status.HTTP_201_CREATED, response_model=PedidoResponse)
 def create_Pedido(pedido: PedidoBase, itens: list[ItemAdd], db: db_dependency):
@@ -96,6 +116,12 @@ def create_Pedido(pedido: PedidoBase, itens: list[ItemAdd], db: db_dependency):
 async def create_Package(db: db_dependency, Package: PackageBase, current_user: User = Depends(get_current_user)):
     from datetime import datetime
     day = datetime.today().strftime('%Y-%m-%d')
+
+    precos = {
+        1:9500,
+        2:12500,
+        3:9500
+    }
 
     pacotes = {
         1: [
@@ -148,7 +174,7 @@ async def create_Package(db: db_dependency, Package: PackageBase, current_user: 
     itens = pacotes[Package.id_pacote]
 
     pedido = PedidoBase(**pedido_data)
-    pedido = create_Pedido(pedido=pedido, itens=itens, db=db)
+    pedido = create_Pedido_Intern(pedido=pedido, itens=itens, preco=precos.id_pacote, db=db)
 
     return pedido
 

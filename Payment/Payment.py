@@ -56,9 +56,9 @@ async def get_payment(id: int, db: db_dependency, current_user: User = Depends(g
         "items": listItens,
         "external_reference": str(pedido.ID),
         "back_urls": {
-            "success": "https://confianopai.com/login",
-            "failure": "http://127.0.0.1:8000/",
-            "pending": "http://127.0.0.1:8000/"
+            "success": "https://elodrinks.confianopai.com/pagamento/aprovado",
+            "failure": "https://elodrinks.confianopai.com/pagamento/reprovado",
+            "pending": "https://elodrinks.confianopai.com/pagamento/pendente"
         },
         "auto_return": "all"
     }
