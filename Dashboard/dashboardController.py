@@ -26,17 +26,17 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 @router.get("/get/receita", status_code=status.HTTP_200_OK)
 async def get_Receita(db: db_dependency):
-    total = db.query(func.sum(models.Pedido.Preço)).filter(models.Pedido.Status == "Pagamento").scalar()
+    total = db.query(func.sum(models.Pedido.Preço)).filter(models.Pedido.Status == "Aprovado").scalar()
     return total
 
 @router.get("/get/ativos")
 async def get_Pedidos(db: db_dependency):
-    total = db.query(models.Pedido).filter(models.Pedido.Status == "Pagamento").count()
+    total = db.query(models.Pedido).filter(models.Pedido.Status == "Aprovado").count()
     return total
 
 @router.get("/get/pendentes")
 async def get_Pendentes(db: db_dependency):
-    total = db.query(models.Pedido).filter(or_(models.Pedido.Status == "Pendente", models.Pedido.Status == "Aprovado")).count()
+    total = db.query(models.Pedido).filter(or_(models.Pedido.Status == "Pendente", models.Pedido.Status == "Pagamento")).count()
     return total
 
 @router.get("/get/thisMonth")
