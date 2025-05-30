@@ -174,7 +174,7 @@ async def create_Package(db: db_dependency, Package: PackageBase, current_user: 
     itens = pacotes[Package.id_pacote]
 
     pedido = PedidoBase(**pedido_data)
-    pedido = create_Pedido_Intern(pedido=pedido, itens=itens, preco=precos.id_pacote, db=db)
+    pedido = create_Pedido_Intern(pedido=pedido, itens=itens, preco=precos[Package.id_pacote], db=db)
 
     return pedido
 
