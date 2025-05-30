@@ -1,5 +1,9 @@
 import os
 import requests
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 from keys import link
 from pathlib import Path
 
