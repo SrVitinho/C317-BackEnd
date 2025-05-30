@@ -94,23 +94,68 @@ def create_Pedido(pedido: PedidoBase, itens: list[ItemAdd], db: db_dependency):
 
 @router.post('/create/packages/', status_code=status.HTTP_201_CREATED)
 async def create_Package(db: db_dependency, Package: PackageBase, current_user: User = Depends(get_current_user)):
+    from datetime import datetime
     day = datetime.today().strftime('%Y-%m-%d')
-    if Package.id_pacote == 1:
-        pedido_data = {
-            "ID_Comprador": current_user.ID,
-            "Num_Convidado": 100,
-            "Nome_Evento": Package.Nome_Evento,
-            "Horario_Inicio": Package.Horario_Inicio,
-            "Horario_Fim": Package.Horario_Fim,
-            "Data_Evento": Package.Data_Evento,
-            "Data_Compra": day,
-            "Status": Package.Status
-        }
-    itens = [  # needs changes after db auto population
-        ItemAdd(ID=1,quantidade=2)
-    ]
+
+    pacotes = {
+        1: [
+            ItemAdd(ID=1, quantidade=50),
+            ItemAdd(ID=18, quantidade=50),
+            ItemAdd(ID=27, quantidade=1),
+            ItemAdd(ID=28, quantidade=12),
+            ItemAdd(ID=29, quantidade=10),
+            ItemAdd(ID=26, quantidade=3),
+            ItemAdd(ID=5, quantidade=40),
+            ItemAdd(ID=6, quantidade=20),
+            ItemAdd(ID=12, quantidade=2),
+            ItemAdd(ID=13, quantidade=3),
+        ],
+        2: [
+            ItemAdd(ID=4, quantidade=100),
+            ItemAdd(ID=19, quantidade=50),
+            ItemAdd(ID=27, quantidade=1),
+            ItemAdd(ID=28, quantidade=15),
+            ItemAdd(ID=29, quantidade=15),
+            ItemAdd(ID=23, quantidade=30),
+            ItemAdd(ID=26, quantidade=10),
+            ItemAdd(ID=21, quantidade=50),
+            ItemAdd(ID=14, quantidade=10),
+            ItemAdd(ID=9, quantidade=20),
+        ],
+        3: [
+            ItemAdd(ID=3, quantidade=80),
+            ItemAdd(ID=8, quantidade=70),
+            ItemAdd(ID=27, quantidade=1),
+            ItemAdd(ID=28, quantidade=9),
+            ItemAdd(ID=29, quantidade=8),
+            ItemAdd(ID=11, quantidade=20),
+            ItemAdd(ID=22, quantidade=10),
+            ItemAdd(ID=13, quantidade=10),
+            ItemAdd(ID=26, quantidade=5),
+            ItemAdd(ID=10, quantidade=25),
+        ],
+    }
+
+    # Checando se o id do pacote existe
+    if Package.id_pacote not in pacotes:
+        raise HTTPException(status_code=404, detail="Pacote não encontrado")
+
+    pedido_data = {
+        "ID_Comprador": current_user.ID,
+        "Num_Convidado": 100,
+        "Nome_Evento": Package.Nome_Evento,
+        "Horario_Inicio": Package.Horario_Inicio,
+        "Horario_Fim": Package.Horario_Fim,
+        "Data_Evento": Package.Data_Evento,
+        "Data_Compra": day,
+        "Status": Package.Status,
+    }
+
+    itens = pacotes[Package.id_pacote]
+
     pedido = PedidoBase(**pedido_data)
-    pedido = create_Pedido(pedido=(pedido), itens=itens, db=db)
+    pedido = create_Pedido(pedido=pedido, itens=itens, db=db)
+
     return pedido
 
 @router.get("/packages/all")
