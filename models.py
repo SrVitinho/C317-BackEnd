@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, Integer, String, Date, Time, Float
 from DataBase import Base
 
 class User(Base):
-    __tablename__ = 'user'
+    __tablename__ = 'User'
 
     ID = Column(Integer, primary_key=True, index=True)
     userName = Column(String(128))
