@@ -116,34 +116,64 @@ async def create_Package(db: db_dependency, Package: PackageBase, current_user: 
 @router.get("/packages/all")
 def get_Packages(id: int, db: db_dependency):
     if id == 1:
-        itens = [  # needs changes after db auto population
-            ItemAdd(ID=1,quantidade=2)
+        # Pacote 1: R$ 7.500,00
+        itens = [
+            ItemAdd(ID=1, quantidade=50),
+            ItemAdd(ID=18, quantidade=50),
+            ItemAdd(ID=27, quantidade=1),
+            ItemAdd(ID=28, quantidade=12),
+            ItemAdd(ID=29, quantidade=10),
+            ItemAdd(ID=26, quantidade=3),
+            ItemAdd(ID=5, quantidade=40),
+            ItemAdd(ID=6, quantidade=20),
+            ItemAdd(ID=12, quantidade=2),
+            ItemAdd(ID=13, quantidade=3)
         ]
 
-        names = []
-        categorias = []
-        for item in itens:
-            names.append(get_Item_Name(item.ID, db=db))
-            categorias.append(get_Item_Category(item.ID, db=db))
-    
     elif id == 2:
-        itens = [  # needs changes after db auto population
-            ItemAdd(ID=2,quantidade=4)
+
+        itens = [
+            ItemAdd(ID=4, quantidade=100),
+            ItemAdd(ID=19, quantidade=50),
+            ItemAdd(ID=27, quantidade=1),
+            ItemAdd(ID=28, quantidade=15),
+            ItemAdd(ID=29, quantidade=15),
+            ItemAdd(ID=23, quantidade=30),
+            ItemAdd(ID=25, quantidade=10),
+            ItemAdd(ID=21, quantidade=50),
+            ItemAdd(ID=14, quantidade=10),
+            ItemAdd(ID=9, quantidade=20)
         ]
 
-        names = []
-        categorias = []
-        for item in itens:
-            names.append(get_Item_Name(item.ID, db=db))
-            categorias.append(get_Item_Category(item.ID, db=db))
+    elif id == 3:
+        itens = [
+            ItemAdd(ID=3, quantidade=80),
+            ItemAdd(ID=8, quantidade=70),
+            ItemAdd(ID=27, quantidade=1),
+            ItemAdd(ID=28, quantidade=9),
+            ItemAdd(ID=29, quantidade=8),
+            ItemAdd(ID=11, quantidade=20),
+            ItemAdd(ID=22, quantidade=10),
+            ItemAdd(ID=13, quantidade=10),
+            ItemAdd(ID=26, quantidade=5),
+            ItemAdd(ID=10, quantidade=25)
+        ]
+
     else:
         raise HTTPException(status_code=404, detail="id not found")
+
+    names = []
+    categorias = []
+    for item in itens:
+        names.append(get_Item_Name(item.ID, db=db))
+        categorias.append(get_Item_Category(item.ID, db=db))
 
     response = []
     for item in range(len(itens)):
         response.append(PackageResponse(id_item=itens[item].ID, quantidade=itens[item].quantidade, nome=names[item], categoria=categorias[item]))
 
     return response
+
 
 @router.get("/all", status_code=status.HTTP_200_OK)
 async def get_pedidos(db: db_dependency, current_user: User = Depends(get_current_user)):

@@ -1,10 +1,11 @@
 import os
 import requests
+from keys import link
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 IMAGENS_DIR = BASE_DIR.parent / "imagenspop"
-BASE_URL = "http://localhost:8000/item/create/"
+BASE_URL = link + "item/create/"
 
 itens = [
     {"Nome": "Cosmopolitan", "Descricao": "Drink clássico com vodka, licor de laranja, limão e cranberry.",
