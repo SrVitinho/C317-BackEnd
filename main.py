@@ -24,7 +24,11 @@ app = FastAPI()
 
 origins = [
     "http://localhost",
-    "http://localhost:3000",
+    "http://localhost:3010",
+    "http://127.0.0.1",
+    "http://127.0.0.1:3010",
+    "http://192.168.0.103:3010",
+    "https://elodrinks.confianopai.com"
 ]
 
 app.add_middleware(
